@@ -1,6 +1,7 @@
 export interface ProductImage {
   id: number;
   src: string;
+  alt?: string;
 }
 
 export interface Product {
@@ -9,7 +10,9 @@ export interface Product {
   slug: string;
   price: string;
   regular_price: string;
-  images: ProductImage[];
-  on_sale: number;
-  sale_price: number;
+  sale_price?: string;
+  on_sale?: boolean;
+  images?: ProductImage[];
+  description?: string;
+  short_description?: string;
 }

@@ -1,40 +1,21 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { ProductCard } from "./ProductCard";
+import { Product } from "@/types/product";
+import { getProducts } from "@/services/woocommerce/products";
 
-const featuredProducts = [
-  {
-    id: 1,
-    name: "Golden Chronograph",
-    price: "$2,499",
-    image: "/placeholder-watch.jpg",
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Ebony Desk Lamp",
-    price: "$899",
-    image: "/placeholder-lamp.jpg",
-    isNew: false,
-  },
-  {
-    id: 3,
-    name: "Leather Weekender",
-    price: "$1,299",
-    image: "/placeholder-bag.jpg",
-    isNew: true,
-  },
-  {
-    id: 4,
-    name: "Marble Coasters (Set of 4)",
-    price: "$149",
-    image: "/placeholder-coasters.jpg",
-    isNew: false,
-  },
-];
+function shuffleArray<T>(array: T[]) {
+  const copy = [...array];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
 
-export default function FeaturedProducts() {
+export default async function FeaturedProducts() {
+  const allProducts = await getProducts();
+  const products = Array.isArray(allProducts) ? allProducts : [];
+  const featuredProducts = shuffleArray(products).slice(0, 4);
+
   return (
     <section className="py-20">
       <div className="mx-auto max-w-7xl px-4">
@@ -48,40 +29,8 @@ export default function FeaturedProducts() {
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {featuredProducts.map((product) => (
-            <Card
-              key={product.id}
-              className="group border-border bg-card text-card-foreground transition-all hover:shadow-lg hover:shadow-primary/10"
-            >
-              <CardContent className="p-0">
-                <div className="relative aspect-square overflow-hidden rounded-t-lg">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105"
-                  />
-                  {product.isNew && (
-                    <Badge className="absolute left-2 top-2 bg-accent text-accent-foreground">
-                      New
-                    </Badge>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter className="flex flex-col items-start p-4">
-                <h3 className="font-medium">{product.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {product.price}
-                </p>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="mt-3 w-full border border-primary/20 bg-transparent hover:bg-primary hover:text-primary-foreground"
-                >
-                  View Details
-                </Button>
-              </CardFooter>
-            </Card>
+          {featuredProducts.map((product: Product) => (
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>

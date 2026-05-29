@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 
     if (slug) {
       // Get single product by slug
-      console.log(`[WooAPI] Fetching product: ${slug}`);
+      console.log(`[WooAPI] Fetching product details for slug: ${slug}`);
       data = await getProduct(slug);
     } else {
       // Get all products

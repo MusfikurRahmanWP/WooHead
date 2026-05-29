@@ -1,14 +1,20 @@
-import HeroBanner from "./components/home/HeroBanner";
-import NewsletterCTA from "./components/home/NewsletterCTA";
-import PromotionBanner from "./components/home/PromotionBanner";
-import FeaturedProducts from "./components/product/FeaturedProducts";
+import {
+  HeroBanner,
+  FeaturedProducts,
+  PromotionBanner,
+  NewsletterCTA,
+  WhyChooseUs,
+  CustomerTestimonials,
+} from "./components/home";
 
 export default function HomePage() {
   return (
     <main className="bg-background text-foreground">
       <HeroBanner />
       <FeaturedProducts />
+      <WhyChooseUs />
       <PromotionBanner />
+      <CustomerTestimonials />
       <NewsletterCTA />
     </main>
   );

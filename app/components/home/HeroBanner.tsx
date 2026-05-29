@@ -26,7 +26,7 @@ export default function HeroBanner() {
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90"
           >
-            <Link href="/shop">Explore Collection</Link>
+            <Link href="/products">Explore Collection</Link>
           </Button>
         </div>
         {/* Subtle animated scroll indicator (optional) */}
