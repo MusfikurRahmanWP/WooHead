@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertCircle, RefreshCw } from "lucide-react";
-import { ProductCard } from "../components/product/ProductCard";
+import { ProductCard } from "../../components/product/ProductCard";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);

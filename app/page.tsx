@@ -5,7 +5,7 @@ import {
   NewsletterCTA,
   WhyChooseUs,
   CustomerTestimonials,
-} from "./components/home";
+} from "../components/home";
 
 export default function HomePage() {
   return (

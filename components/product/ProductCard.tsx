@@ -13,14 +13,14 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Card
       key={product.id}
-      className="group border-border bg-card text-card-foreground transition-all hover:shadow-lg hover:shadow-primary/10"
+      className="group border-border bg-card text-card-foreground transition-all hover:shadow-lg hover:shadow-primary/10 py-0"
     >
       <CardContent className="p-0">
         <div className="relative aspect-square overflow-hidden rounded-t-lg bg-muted">
           {/* If product.images exists and has src, use next/image.
                         Otherwise show a fallback. */}
           {product.images && product.images[0]?.src ? (
-            <div className="relative aspect-square overflow-hidden rounded-lg">
+            <div className="relative aspect-9/16 overflow-hidden rounded-lg">
               <Image
                 src={product.images?.[0]?.src || "/placeholder.png"}
                 alt={product.name}

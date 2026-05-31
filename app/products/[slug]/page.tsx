@@ -58,7 +58,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <div className="grid gap-10 lg:grid-cols-[1.3fr_0.9fr] xl:grid-cols-[1.5fr_1fr]">
           <section className="rounded-3xl border border-border bg-card p-4 shadow-sm sm:p-6">
             {product.images && product.images[0]?.src ? (
-              <div className="relative overflow-hidden rounded-3xl bg-muted pb-[80%]">
+              <div className="relative h-[800px] overflow-hidden rounded-3xl bg-muted">
                 <Image
                   src={product.images[0].src}
                   alt={product.name}
