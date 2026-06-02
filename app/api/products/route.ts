@@ -1,40 +1,51 @@
 import { getProducts, getProduct } from "@/services/woocommerce/products";
 import { NextRequest, NextResponse } from "next/server";
 
-// Disable caching - products can change frequently
-export const revalidate = 0;
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    // Get query parameters (e.g., ?slug=product-name)
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get("slug");
 
-    let data;
-
+    // 1. Single product by slug
     if (slug) {
-      // Get single product by slug
-      console.log(`[WooAPI] Fetching product details for slug: ${slug}`);
-      data = await getProduct(slug);
-    } else {
-      // Get all products
-      console.log("[WooAPI] Fetching all products");
-      data = await getProducts();
+      const product = await getProduct(slug);
+      if (!product) {
+        return NextResponse.json(
+          { error: "Product not found" },
+          { status: 404 },
+        );
+      }
+      return NextResponse.json(product, {
+        headers: { "Cache-Control": "no-store" },
+      });
     }
 
-    return NextResponse.json(data, {
-      headers: {
-        "Cache-Control":
-          "no-store, no-cache, must-revalidate, proxy-revalidate",
-        Pragma: "no-cache",
-        Expires: "0",
+    // 2. Paginated product list
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    const perPage = parseInt(searchParams.get("per_page") || "15", 10);
+
+    const { products, totalPages, totalProducts } = await getProducts(
+      page,
+      perPage,
+    );
+
+    return NextResponse.json(
+      { products, totalPages, total: totalProducts },
+      {
+        headers: {
+          "Cache-Control":
+            "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
       },
-    });
+    );
   } catch (error) {
-    console.error("[WooAPI] Error fetching products:", error);
-    const errorMessage =
+    console.error("[ProductsAPI] Error:", error);
+    const message =
       error instanceof Error ? error.message : "Failed to fetch products";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

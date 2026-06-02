@@ -57,3 +57,46 @@ export async function makeWooRequest(
     throw error;
   }
 }
+
+/**
+ * Make authenticated requests and return both the parsed JSON body
+ * and the response headers. Useful when you need pagination metadata,
+ * rate limits, or other header values from WooCommerce.
+ */
+export async function makeWooRequestWithMeta(
+  endpoint: string,
+  params?: Record<string, string | number>,
+): Promise<{ data: any; headers: Headers }> {
+  const { Url, wooCK, wooCS } = getWooConfig();
+
+  const url = new URL(`${Url}wp-json/wc/v3/${endpoint}`);
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      url.searchParams.append(key, String(value));
+    });
+  }
+
+  const auth = Buffer.from(`${wooCK}:${wooCS}`).toString("base64");
+
+  try {
+    const response = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        Authorization: `Basic ${auth}`,
+        "Content-Type": "application/json",
+      },
+      signal: AbortSignal.timeout(30000),
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      throw new Error(`WooCommerce API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return { data, headers: response.headers };
+  } catch (error) {
+    console.error(`WooCommerce request failed for ${endpoint}:`, error);
+    throw error;
+  }
+}

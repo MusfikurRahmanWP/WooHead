@@ -1,31 +1,30 @@
 import { makeWooRequest } from "./client";
+import { makeWooRequestWithMeta } from "./client";
 
-export async function getAllProducts(currentPage = 1, perPage = 15) {
-  return await makeWooRequest("products", {
-    page: currentPage,
+export async function getProducts(page = 1, perPage = 15) {
+  const { data: products, headers } = await makeWooRequestWithMeta("products", {
+    page,
     per_page: perPage,
   });
-}
 
-export async function getSingleProduct(slug?: string | null) {
-  const normalizedSlug = typeof slug === "string" ? slug.trim() : "";
-  console.log("[WooCommerce] Fetching single product by slug:", normalizedSlug);
-
-  if (!normalizedSlug) {
-    // console.warn("[WooCommerce] getSingleProduct called without a valid slug.");
-    return null;
-  }
-
-  const data = await makeWooRequest("products", { slug: normalizedSlug });
-  const product = Array.isArray(data) ? data[0] || null : data;
-  // console.log("[WooCommerce] Single product response:", product);
-  return product;
-}
-
-export async function getProducts(currentPage = 1, perPage = 15) {
-  return await getAllProducts(currentPage, perPage);
+  return {
+    products,
+    totalProducts: Number(headers.get("x-wp-total")),
+    totalPages: Number(headers.get("x-wp-totalpages")),
+    currentPage: page,
+  };
 }
 
 export async function getProduct(slug?: string | null) {
-  return await getSingleProduct(slug);
+  const normalizedSlug = typeof slug === "string" ? slug.trim() : "";
+
+  if (!normalizedSlug) {
+    return null;
+  }
+
+  const data = await makeWooRequest("products", {
+    slug: normalizedSlug,
+  });
+
+  return Array.isArray(data) ? data[0] || null : data;
 }
