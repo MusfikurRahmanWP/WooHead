@@ -12,9 +12,9 @@ function shuffleArray<T>(array: T[]) {
 }
 
 export default async function FeaturedProducts() {
-  const allProducts = await getProducts();
-  const products = Array.isArray(allProducts) ? allProducts : [];
-  const featuredProducts = shuffleArray(products).slice(0, 4);
+  const { products } = await getProducts();
+  const product = Array.isArray(products) ? products : [];
+  const featuredProducts = shuffleArray(product).slice(0, 4);
 
   return (
     <section className="py-20">
